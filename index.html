@@ -431,5 +431,31 @@
 
 </div>
 <script src="assets/runtime.js"></script>
+<script>
+// Mobile touch navigation
+(function(){
+  var deck = document.querySelector('.deck');
+  var touchStartX = 0, touchStartY = 0;
+  deck.addEventListener('touchstart', function(e){
+    touchStartX = e.touches[0].clientX;
+    touchStartY = e.touches[0].clientY;
+  }, {passive:true});
+  deck.addEventListener('touchend', function(e){
+    var dx = e.changedTouches[0].clientX - touchStartX;
+    var dy = e.changedTouches[0].clientY - touchStartY;
+    if (Math.abs(dx) > Math.abs(dy) && Math.abs(dx) > 40) {
+      if (dx < -20) window.dispatchEvent(new KeyboardEvent('keydown',{key:'ArrowRight',code:'ArrowRight'}));
+      else if (dx > 20) window.dispatchEvent(new KeyboardEvent('keydown',{key:'ArrowLeft',code:'ArrowLeft'}));
+    }
+  });
+  // Click zones: left 30% = prev, right 30% = next
+  deck.addEventListener('click', function(e){
+    if (e.target.closest('button') || e.target.closest('[onclick]')) return;
+    var w = window.innerWidth;
+    if (e.clientX < w * 0.3) window.dispatchEvent(new KeyboardEvent('keydown',{key:'ArrowLeft',code:'ArrowLeft'}));
+    else if (e.clientX > w * 0.7) window.dispatchEvent(new KeyboardEvent('keydown',{key:'ArrowRight',code:'ArrowRight'}));
+  });
+})();
+</script>
 </body>
 </html>
